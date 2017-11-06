@@ -1,0 +1,41 @@
+[comment encoding = UTF-8 /]
+[module generate('http://fr.ubo.mde.aitmaksene.wps')]
+
+[template public generateElement(aWorkFlow : WorkFlow)]
+[comment @main/]
+[for (aClass : Class | aWorkFlow.class)]
+[file (aClass.name.toUpperFirst().concat('.java'), false, 'UTF-8')]
+package [aWorkFlow.RepositoryName/];
+
+import org.geotools.process.factory.DescribeParameter;
+import org.geotools.process.factory.DescribeProcess;
+import org.geotools.process.factory.DescribeResult;
+import org.geotools.process.factory.StaticMethodsProcessFactory;
+import org.geotools.text.Text;
+
+public class [aClass.name/] extends StaticMethodsProcessFactory<[aClass.name/]>
+{
+	public [aClass.name/]()
+	{
+		super(Text.text("Tests on wps"),"test WPS",[aClass.name/].class);
+	}
+
+	[for (aWPS : WPS | aWorkFlow.wps)]
+	[if (aWPS.implementation=aClass)]
+	@DescribeProcess(title="[aWPS.title/]",description="[aWPS.description/]")
+	@DescribeResult(name="[aWPS.output.name/]",description="[aWPS.output.description/]")
+	
+	public static [aWPS.output.type/] [aWPS.name/]([for(input : Input | aWPS.inputs) separator(',')]@DescribeParameter(name="[input.name/]",description=" [input.description/]") [input.type/] [input.name/][/for])
+	{
+		[aWPS.output.type/] res;
+		
+		[aWPS._body/]
+		
+		return res;
+	}
+	[/if]
+	[/for]
+}
+[/file]
+[/for]
+[/template]
