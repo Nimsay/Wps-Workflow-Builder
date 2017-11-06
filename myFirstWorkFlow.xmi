@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ASCII"?>
+<wps:WorkFlow
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:wps="http://fr.ubo.mde.aitmaksene.wps"
+    xsi:schemaLocation="http://fr.ubo.mde.aitmaksene.wps ../model/wps.ecore"
+    name="testWFwps"
+    RepositoryName="yasmin.wps.test.testInstall">
+  <wps name="Add"
+      title="WPS addition"
+      description="WPS function that adds a number to another"
+      body="res=a+b;"
+      implementation="//@class.0">
+    <inputs
+        name="a"
+        type="integer"
+        description="the value of a"/>
+    <inputs
+        name="b"
+        type="integer"
+        description="the value of b"/>
+    <output
+        name="c"
+        type="integer"
+        description="the value of the result"/>
+  </wps>
+  <wps name="Mult"
+      title="WPS multiplication"
+      description="WPS multiplication of a and b"
+      body="res=d*e;"
+      implementation="//@class.0">
+    <inputs
+        name="d"
+        type="integer"
+        description="the value of d"/>
+    <inputs
+        name="e"
+        type="integer"
+        description="the value of e"/>
+    <output
+        name="f"
+        type="integer"
+        description="the value of the result"/>
+  </wps>
+  <wps name="Minus"
+      title="WPS  minus"
+      description="WPS function that subtract a number from another"
+      body="res =g-h;"
+      implementation="//@class.0">
+    <inputs
+        name="g"
+        type="integer"
+        description="the value of g"/>
+    <inputs
+        name="h"
+        type="integer"
+        description="the value of h"/>
+    <output
+        name="i"
+        type="integer"
+        description="The resulting of minus"/>
+  </wps>
+  <wps name="SayHello"
+      title="WPS HelloWorld"
+      description="WPS that says  Hello"
+      body="res =&quot;Hello&quot;+name;"
+      implementation="//@class.0">
+    <inputs
+        name="name"
+        description="name used in Hello message"/>
+    <output
+        name="HelloMessage"
+        description="The resulting Hello message"/>
+  </wps>
+  <links input="//@wps.1/@inputs.0"
+      output="//@wps.0/@output.0"/>
+  <links input="//@wps.2/@inputs.0"
+      output="//@wps.1/@output.0"/>
+  <class name="HelloWorld"/>
+</wps:WorkFlow>
