@@ -1,0 +1,70 @@
+[comment encoding = UTF-8 /]
+[module generateWF('http://fr.ubo.mde.aitMaksene.wfwps')]
+
+[template public generateWF(aWorkFlow : WorkFlow)]
+[comment @main/]
+[file (aWorkFlow.identifier.concat('_class').toUpperFirst().concat('.java'), false, 'UTF-8')]
+
+package [aWorkFlow.eContainer().oclAsType(WorflowWps).projectName.concat('.WPSpackage')/];
+
+import org.geotools.process.factory.DescribeParameter;
+import org.geotools.process.factory.DescribeProcess;
+import org.geotools.process.factory.DescribeResult;
+import org.geotools.process.factory.StaticMethodsProcessFactory;
+import org.geotools.text.Text;
+
+public class [aWorkFlow.identifier.concat('_class').toUpperFirst()/]
+             extends StaticMethodsProcessFactory<[aWorkFlow.identifier.concat('_class').toUpperFirst()/]>
+{
+	public [aWorkFlow.identifier.concat('_class').toUpperFirst()/]()
+	{
+		super(Text.text("Tests on wps"),"test WPS",[aWorkFlow.identifier.concat('_class').toUpperFirst()/].class);
+	}
+
+	@DescribeProcess(title="[aWorkFlow.title/]",description="[aWorkFlow.abstract/]")
+	@DescribeResult(name="[aWorkFlow.outputs->at(1).identifier/]",description="[aWorkFlow.outputs->at(1).abstract/]")
+	
+	public static [aWorkFlow.outputs->at(1).type/] [aWorkFlow.identifier/]([for(input : Input | aWorkFlow.inputs)
+    separator(',')]@DescribeParameter(name="[input.identifier/]",description=" [input.abstract/]")
+     [input.type/] [input.identifier/][/for])
+	{
+		[aWorkFlow.outputs->at(1).type/] [aWorkFlow.outputs->at(1).identifier/];
+       	
+		[for(aWPS: WPS|aWorkFlow.wps)]
+			[for (input:Input | aWPS.inputs )]
+				[if(aWorkFlow.inputs-> excludes(input))]
+						[input.type/] [input.identifier/];
+				[/if]
+			[/for]
+
+			[for (output:Output | aWPS.outputs )]
+				[if( aWorkFlow.outputs-> excludes(output))]
+						[output.type/] [output.identifier/];
+				[/if]
+			[/for]
+		[/for]
+		
+		[for(aWPS: WPS|aWorkFlow.wps)]
+		[aWPS.outputs->at(1).identifier/] = [aWPS.oclAsType(LocalWPS).functionName/]([for(inp: Input |aWPS.inputs)separator(',')][inp.identifier/][/for]);
+
+			[comment propagation des sorties/]
+			[for(aLink: Link|aWorkFlow.links)]
+				[if(aWPS.outputs->at(1)=aLink.input)]
+					[aLink.output.identifier/]=[aWPS.outputs->at(1).identifier/];
+				[/if]
+			[/for]	
+		[/for]		
+	
+
+		
+		
+		
+		return [aWorkFlow.outputs->at(1).identifier/];
+	}
+}
+
+
+
+[/file]
+
+[/template]
