@@ -1,11 +1,11 @@
 [comment encoding = UTF-8 /]
-[module generate('http://fr.ubo.mde.aitmaksene.wps')]
+[module generateWPS('http://fr.ubo.mde.aitMaksene.wfwps')]
 
-[template public generateElement(aWorkFlow : WorkFlow)]
+[template public generateWPS(aWPS : WPS)]
 [comment @main/]
-[for (aClass : Class | aWorkFlow.class)]
-[file (aClass.name.toUpperFirst().concat('.java'), false, 'UTF-8')]
-package [aWorkFlow.RepositoryName/];
+[file (aWPS.identifier.concat('_class').toUpperFirst().concat('.java'), false, 'UTF-8')]
+[if (aWPS.oclIsTypeOf(LocalWPS))]
+package [aWPS.eContainer().oclAsType(WorflowWps).projectName.concat('.WPSpackage')/];
 
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
@@ -13,29 +13,32 @@ import org.geotools.process.factory.DescribeResult;
 import org.geotools.process.factory.StaticMethodsProcessFactory;
 import org.geotools.text.Text;
 
-public class [aClass.name/] extends StaticMethodsProcessFactory<[aClass.name/]>
+public class [aWPS.identifier.concat('_class').toUpperFirst()/] extends StaticMethodsProcessFactory<[aWPS.identifier.concat('_class').toUpperFirst()/]>
 {
-	public [aClass.name/]()
+	public [aWPS.identifier.concat('_class').toUpperFirst()/]()
 	{
-		super(Text.text("Tests on wps"),"test WPS",[aClass.name/].class);
+		super(Text.text("Tests on wps"),"test WPS",[aWPS.identifier.concat('_class').toUpperFirst()/].class);
 	}
 
-	[for (aWPS : WPS | aWorkFlow.wps)]
-	[if (aWPS.implementation=aClass)]
-	@DescribeProcess(title="[aWPS.title/]",description="[aWPS.description/]")
-	@DescribeResult(name="[aWPS.output.name/]",description="[aWPS.output.description/]")
+	@DescribeProcess(title="[aWPS.title/]",description="[aWPS.abstract/]")
+	@DescribeResult(name="[aWPS.outputs->at(1).identifier/]",description="[aWPS.outputs->at(1).abstract/]")
 	
-	public static [aWPS.output.type/] [aWPS.name/]([for(input : Input | aWPS.inputs) separator(',')]@DescribeParameter(name="[input.name/]",description=" [input.description/]") [input.type/] [input.name/][/for])
+	public static [aWPS.outputs->at(1).type/] [aWPS.identifier/]([for(input : Input | aWPS.inputs)
+    separator(',')]@DescribeParameter(name="[input.identifier/]",description=" [input.abstract/]")
+     [input.type/] [input.identifier/][/for])
 	{
-		[aWPS.output.type/] res;
+		[aWPS.outputs->at(1).type/] [aWPS.outputs->at(1).identifier/];
+[comment cast de wps en local wps/]		
+		[aWPS.outputs->at(1).identifier/] = [aWPS.oclAsType(LocalWPS).functionName/]([for(input : Input | aWPS.inputs) 
+              separator(',')] [input.identifier/][/for]);
 		
-		[aWPS._body/]
-		
-		return res;
+		return [aWPS.outputs->at(1).identifier/];
 	}
-	[/if]
-	[/for]
 }
+
+[else]
+	    // glue code to generate
+[/if]
 [/file]
-[/for]
+
 [/template]
