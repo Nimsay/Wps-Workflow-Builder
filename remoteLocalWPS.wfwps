@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfwps:WorflowWps xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfwps="http://fr.ubo.mde.aitMaksene.wfwps" projectName="DoubleAddRL">
+  <wpsLibrary xsi:type="wfwps:RemotelWPS" identifier="WPS:add" title="ADD" abstract="remoteAdd" wpsIdentifier="WPS:add">
+    <inputs identifier="r1" title="R1" abstract="valuer de la premiere entree"/>
+    <inputs identifier="r2" title="R2" abstract="valeur de la deuxieme entree"/>
+    <outputs identifier="res" title="RES" abstract="resultat"/>
+  </wpsLibrary>
+  <wpsLibrary xsi:type="wfwps:LocalWPS" identifier="add" title="ADD" abstract="somme de deux entiers" functionName="addBody">
+    <inputs identifier="a1" title="A1" abstract="valeur de la premiere entree" link="//@wfLibrary.0/@links.0"/>
+    <inputs identifier="a2" title="A2" abstract="valeur de la deuxieme entree"/>
+    <outputs identifier="b" title="B" abstract="valeur de la sortie"/>
+  </wpsLibrary>
+  <wfLibrary identifier="remoteLocalAddWPS" title="remoteLocalAdd" abstract="workFlow remoteWPS et localWPS" wps="//@wpsLibrary.1 //@wpsLibrary.0" outputs="//@wpsLibrary.1/@outputs.0" inputs="//@wpsLibrary.1/@inputs.1 //@wpsLibrary.0/@inputs.0 //@wpsLibrary.0/@inputs.1">
+    <links input="//@wpsLibrary.0/@outputs.0" output="//@wpsLibrary.1/@inputs.0"/>
+  </wfLibrary>
+</wfwps:WorflowWps>
