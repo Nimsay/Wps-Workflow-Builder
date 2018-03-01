@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfwps:WorflowWps xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wfwps="http://fr.ubo.mde.aitMaksene.wfwps" projectName="LocalWpsRd">
+  <wpsLibrary xsi:type="wfwps:LocalWPS" identifier="imgFile" title="ImageToFile" abstract="Save an Image Into a File" functionName="ImageToFile">
+    <inputs identifier="a" title="A" abstract="valeur de l'entree" type="Raster" link="//@wfLibrary.0/@links.0"/>
+    <outputs identifier="b" title="B" abstract="sortie"/>
+  </wpsLibrary>
+  <wfLibrary identifier="LocalWpsRd" title="LocalWpsRd" abstract="local wps using referencedData" wps="//@wpsLibrary.0" outputs="//@wpsLibrary.0/@outputs.0" inputs="//@wpsLibrary.0/@inputs.0">
+    <links input="//@wfLibrary.0/@referencedData.0" output="//@wpsLibrary.0/@inputs.0"/>
+    <referencedData/>
+  </wfLibrary>
+</wfwps:WorflowWps>
