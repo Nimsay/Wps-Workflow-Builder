@@ -64,14 +64,18 @@ public class [aWorkFlow.identifier.concat('_class').toUpperFirst()/]
 	
 		
 	
-		[comment Appel de WMS/]
-		[for(aWPS: WPS|aWorkFlow.wps)]
-				[for (input:Input | aWPS.inputs )]
-					[if(input.type)=WPStype::Raster]
-						WMSrequest aWMSrequest = new WMSrequest("atlas.gc.ca/cgi-bin/atlaswms_en", "png",583,420,"EPSG:4326",
-				           -131.13151509433965,46.60532747661736,-117.61620566037737,56.34191403281659);
-						rdImage[i/]= aWMSrequest.Call();
+					[comment Appel de WMS/]
+					[for(alink:Link |aWorkFlow.links)]
+							[if(alink.input).oclIsKindOf(ReferencedData)]
+								[for(rd:ReferencedData|aWorkFlow.referencedData)]
+									WMSrequest aWMSrequest = new WMSrequest([rd.serverName/],[rd.typeImage/] ,[rd.largeurImage/],[rd.longueureImage/],[rd.SRS/],
+				        		    [rd.bboxX1/],[rd.bboxX2/],[rd.bboxX3/],[rd.bboxX4/]);
+									rdImage[i/]= aWMSrequest.Call();
+								[/for]
+							[/if]
+					[/for]
 
+					[for(aWPS: WPS|aWorkFlow.wps)]
                 		 [for(aLink:Link|aWorkFlow.links)]
 							[for(input:Input|aWPS.inputs)]
 								[if(aWPS.inputs->at(1) = aLink.output)]
@@ -79,33 +83,35 @@ public class [aWorkFlow.identifier.concat('_class').toUpperFirst()/]
 								[/if]
 							[/for]
 						[/for]
-					
-					[/if]
-				[/for]
-			[/for]	
+					[/for]	
 
 			[for(aWPS: WPS|aWorkFlow.wps)]
 				[if (aWPS.oclIsTypeOf(LocalWPS))]
+
 					[aWPS.outputs->at(1).identifier/] = [aWPS.oclAsType(LocalWPS).functionName/]
 		    			([for(inp: Input |aWPS.inputs)separator(',')][inp.identifier/][/for]);
 
 					
-				[comment Appel de WPS dans le cas de RemoteWPS/]			
-				[else]
-					RemoteWpsCall wpscallFinal= new RemoteWpsCall("http://localhost:8080/geoserver/ows","WPS:add");
+					[comment Appel de WPS dans le cas de RemoteWPS/]			
+				[else]	
+
+					RemoteWpsCall wpscallFinal= new RemoteWpsCall([aWPS.oclAsType(RemotelWPS).serverName/],[aWPS.oclAsType(RemotelWPS).wpsIdentifier/]);
 					ArrayList<Object> inputs= new ArrayList<Object>();
-					int o1=1;
-					int o2=2;
-					inputs.add(o1);
-					inputs.add(o2);
-					res = wpscallFinal.Request(inputs);
+					int [aWPS.inputs->at(1).identifier/]=1;
+					int [aWPS.inputs->at(2).identifier/]=2;
+					inputs.add([aWPS.inputs->at(1).identifier/]);
+					inputs.add([aWPS.inputs->at(1).identifier/]);
+					[aWPS.outputs->at(1).identifier/]= wpscallFinal.Request(inputs);
+					return [aWPS.outputs->at(1).identifier/];
+			
 				[/if]
-			[comment propagation des sorties/]
-			[for(aLink: Link|aWorkFlow.links)]
-								[if(aWPS.outputs->at(1)=aLink.input)]
-									[aLink.output.identifier/]=[aWPS.outputs->at(1).identifier/];
-								[/if]
-			[/for]	
+		
+				[comment propagation des sorties/]
+				[for(aLink: Link|aWorkFlow.links)]
+					[if(aWPS.outputs->at(1)=aLink.input)]
+						[aLink.output.identifier/]=[aWPS.outputs->at(1).identifier/];
+					[/if]
+				[/for]	
 					
 			[/for]	
 	
